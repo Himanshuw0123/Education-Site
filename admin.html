@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Meridian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: {
+    display: ['Fraunces','serif'], body: ['Inter','sans-serif'], mono: ['IBM Plex Mono','monospace'] },
+    colors: { paper:'#F6F4EE', ink:'#1B2B26', pine:'#233C34', trail:'#3B6E64', amber:'#C77D3B', stone:'#8A8578', night:'#0F1815', nightcard:'#182420' } } } }
+</script>
+<style>
+  body { background:#F6F4EE; } html.dark body { background:#0F1815; }
+  :focus-visible { outline: 2px solid #C77D3B; outline-offset: 2px; }
+  .nav-item.active { background: rgba(59,110,100,0.1); color:#233C34; font-weight:600; }
+  html.dark .nav-item.active { background: rgba(143,196,180,0.12); color:#EDEAE1; }
+  .bar { transition: height .6s ease; }
+  table th { font-weight:500; }
+</style>
+</head>
+<body class="font-body text-ink dark:text-[#EDEAE1] antialiased">
+
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="hidden lg:flex w-60 shrink-0 flex-col border-r border-ink/10 dark:border-white/10 bg-white/50 dark:bg-white/[0.02] p-6">
+    <a href="index.html" class="flex items-center gap-2 mb-10">
+      <svg width="24" height="24" viewBox="0 0 26 26" fill="none"><path d="M2 20 C7 20 8 8 13 8 C18 8 19 20 24 20" stroke="#C77D3B" stroke-width="2" stroke-linecap="round"/><circle cx="13" cy="8" r="2.5" fill="#3B6E64"/></svg>
+      <span class="font-display text-lg font-semibold">Meridian <span class="text-xs font-mono text-amber align-top">Admin</span></span>
+    </a>
+    <nav class="space-y-1 text-sm">
+      <a href="#" class="nav-item active flex items-center gap-3 px-3 py-2.5 rounded-lg">Dashboard</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">Students</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">Instructors</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">Courses</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">Orders &amp; payments</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">Coupons</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">Blog &amp; CMS</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">Analytics</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">Roles &amp; permissions</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">Audit logs</a>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 p-6 lg:p-10">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="font-display text-2xl font-semibold">Overview</h1>
+        <p class="text-sm text-ink/50 dark:text-white/50 mt-1">Tuesday, July 26 — last synced 4 minutes ago</p>
+      </div>
+      <button class="text-sm font-semibold px-4 py-2 rounded-full bg-pine dark:bg-trail text-paper">Export report</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+      <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-5">
+        <p class="text-xs font-mono uppercase text-ink/40 dark:text-white/40">Revenue (MTD)</p>
+        <p class="font-display text-2xl font-semibold mt-1">$184,200</p>
+        <p class="text-xs text-trail dark:text-[#8FC4B4] mt-1">↑ 12.4% vs last month</p>
+      </div>
+      <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-5">
+        <p class="text-xs font-mono uppercase text-ink/40 dark:text-white/40">New enrollments</p>
+        <p class="font-display text-2xl font-semibold mt-1">2,318</p>
+        <p class="text-xs text-trail dark:text-[#8FC4B4] mt-1">↑ 6.1% vs last month</p>
+      </div>
+      <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-5">
+        <p class="text-xs font-mono uppercase text-ink/40 dark:text-white/40">Active students</p>
+        <p class="font-display text-2xl font-semibold mt-1">86,412</p>
+        <p class="text-xs text-amber mt-1">↓ 1.2% vs last month</p>
+      </div>
+      <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-5">
+        <p class="text-xs font-mono uppercase text-ink/40 dark:text-white/40">Completion rate</p>
+        <p class="font-display text-2xl font-semibold mt-1">92%</p>
+        <p class="text-xs text-trail dark:text-[#8FC4B4] mt-1">↑ 0.8% vs last month</p>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6 mb-10">
+      <!-- Revenue chart -->
+      <div class="lg:col-span-2 bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-6">
+        <div class="flex items-center justify-between mb-6">
+          <p class="font-display font-semibold">Revenue, last 12 weeks</p>
+          <span class="text-xs font-mono text-ink/40 dark:text-white/40">USD</span>
+        </div>
+        <div class="flex items-end gap-2 h-40" id="chart"></div>
+      </div>
+
+      <!-- Most popular courses -->
+      <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-6">
+        <p class="font-display font-semibold mb-5">Most popular courses</p>
+        <div class="space-y-4 text-sm">
+          <div class="flex justify-between"><span>Product Analytics, Applied</span><span class="font-mono text-ink/50 dark:text-white/50">1,204</span></div>
+          <div class="flex justify-between"><span>Systems Design for Interviews</span><span class="font-mono text-ink/50 dark:text-white/50">980</span></div>
+          <div class="flex justify-between"><span>Figma to Production UI</span><span class="font-mono text-ink/50 dark:text-white/50">845</span></div>
+          <div class="flex justify-between"><span>SQL for Decision Making</span><span class="font-mono text-ink/50 dark:text-white/50">712</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders table -->
+    <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 overflow-hidden">
+      <div class="p-6 pb-0 flex items-center justify-between">
+        <p class="font-display font-semibold">Recent orders</p>
+        <a href="#" class="text-xs font-semibold text-trail dark:text-[#8FC4B4] hover:underline">View all →</a>
+      </div>
+      <table class="w-full text-sm mt-4">
+        <thead>
+          <tr class="text-xs font-mono uppercase text-ink/40 dark:text-white/40 border-b border-ink/10 dark:border-white/10">
+            <th class="text-left px-6 py-3">Order</th>
+            <th class="text-left px-6 py-3">Student</th>
+            <th class="text-left px-6 py-3">Course</th>
+            <th class="text-left px-6 py-3">Amount</th>
+            <th class="text-left px-6 py-3">Status</th>
+          </tr>
+        </thead>
+        <tbody id="ordersBody"></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script>
+  if (localStorage.getItem('meridian-theme') === 'dark') document.documentElement.classList.add('dark');
+
+  const weeks = [40,55,48,62,58,70,66,74,80,72,85,92];
+  const max = Math.max(...weeks);
+  const chart = document.getElementById('chart');
+  weeks.forEach(v => {
+    chart.innerHTML += `<div class="bar flex-1 rounded-t bg-trail dark:bg-[#8FC4B4]" style="height:${(v/max*100)}%"></div>`;
+  });
+
+  const orders = [
+    { id: '#M-10234', student: 'Alicia Moreno', course: 'Product Analytics, Applied', amount: '$79', status: 'Paid' },
+    { id: '#M-10233', student: 'Devon Turner', course: 'Systems Design for Interviews', amount: '$99', status: 'Paid' },
+    { id: '#M-10232', student: 'Grace Park', course: 'All Access — Monthly', amount: '$29', status: 'Refunded' },
+    { id: '#M-10231', student: 'Marcus Diallo', course: 'SQL for Decision Making', amount: '$49', status: 'Pending' },
+  ];
+  const statusColor = { Paid: 'text-trail dark:text-[#8FC4B4]', Refunded: 'text-amber', Pending: 'text-ink/50 dark:text-white/50' };
+  const body = document.getElementById('ordersBody');
+  orders.forEach(o => {
+    body.innerHTML += `
+      <tr class="border-b border-ink/5 dark:border-white/5">
+        <td class="px-6 py-3.5 font-mono text-xs">${o.id}</td>
+        <td class="px-6 py-3.5">${o.student}</td>
+        <td class="px-6 py-3.5 text-ink/60 dark:text-white/60">${o.course}</td>
+        <td class="px-6 py-3.5 font-medium">${o.amount}</td>
+        <td class="px-6 py-3.5 ${statusColor[o.status]}">${o.status}</td>
+      </tr>`;
+  });
+</script>
+</body>
+</html>

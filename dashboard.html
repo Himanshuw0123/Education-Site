@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Meridian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: {
+    display: ['Fraunces','serif'], body: ['Inter','sans-serif'], mono: ['IBM Plex Mono','monospace'] },
+    colors: { paper:'#F6F4EE', ink:'#1B2B26', pine:'#233C34', trail:'#3B6E64', amber:'#C77D3B', stone:'#8A8578', night:'#0F1815', nightcard:'#182420' } } } }
+</script>
+<style>
+  body { background:#F6F4EE; } html.dark body { background:#0F1815; }
+  :focus-visible { outline: 2px solid #C77D3B; outline-offset: 2px; }
+  .nav-item.active { background: rgba(59,110,100,0.1); color:#233C34; font-weight:600; }
+  html.dark .nav-item.active { background: rgba(143,196,180,0.12); color:#EDEAE1; }
+  .progress-bar { transition: width .6s ease; }
+</style>
+</head>
+<body class="font-body text-ink dark:text-[#EDEAE1] antialiased">
+
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="hidden lg:flex w-64 shrink-0 flex-col border-r border-ink/10 dark:border-white/10 bg-white/50 dark:bg-white/[0.02] p-6">
+    <a href="index.html" class="flex items-center gap-2 mb-10">
+      <svg width="24" height="24" viewBox="0 0 26 26" fill="none"><path d="M2 20 C7 20 8 8 13 8 C18 8 19 20 24 20" stroke="#C77D3B" stroke-width="2" stroke-linecap="round"/><circle cx="13" cy="8" r="2.5" fill="#3B6E64"/></svg>
+      <span class="font-display text-xl font-semibold">Meridian</span>
+    </a>
+    <nav class="space-y-1 text-sm">
+      <a href="#" class="nav-item active flex items-center gap-3 px-3 py-2.5 rounded-lg">Dashboard</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">My courses</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">Assignments</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">Quiz results</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">Certificates</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">Wishlist</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">Payments &amp; invoices</a>
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-ink/5 dark:hover:bg-white/5 transition">Settings</a>
+    </nav>
+    <div class="mt-auto pt-6 border-t border-ink/10 dark:border-white/10 flex items-center gap-3">
+      <img src="https://images.unsplash.com/photo-1487017159836-4e23ece2e4cf?w=80&h=80&fit=crop" class="w-9 h-9 rounded-full object-cover" alt="">
+      <div>
+        <p class="text-sm font-medium">Alicia Moreno</p>
+        <a href="login.html" class="text-xs text-ink/40 dark:text-white/40 hover:underline">Sign out</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 p-6 lg:p-10 max-w-6xl">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="font-display text-2xl font-semibold">Welcome back, Alicia</h1>
+        <p class="text-sm text-ink/50 dark:text-white/50 mt-1">You're 3 lessons from finishing your current route.</p>
+      </div>
+      <button class="w-10 h-10 rounded-full border border-ink/15 dark:border-white/20 flex items-center justify-center relative">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+        <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber"></span>
+      </button>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+      <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-5">
+        <p class="text-xs font-mono uppercase text-ink/40 dark:text-white/40">Enrolled</p>
+        <p class="font-display text-2xl font-semibold mt-1">6 courses</p>
+      </div>
+      <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-5">
+        <p class="text-xs font-mono uppercase text-ink/40 dark:text-white/40">Completed</p>
+        <p class="font-display text-2xl font-semibold mt-1">3 courses</p>
+      </div>
+      <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-5">
+        <p class="text-xs font-mono uppercase text-ink/40 dark:text-white/40">Certificates</p>
+        <p class="font-display text-2xl font-semibold mt-1">3 earned</p>
+      </div>
+      <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-5">
+        <p class="text-xs font-mono uppercase text-ink/40 dark:text-white/40">Streak</p>
+        <p class="font-display text-2xl font-semibold mt-1">12 days</p>
+      </div>
+    </div>
+
+    <!-- Continue learning -->
+    <div class="mb-10">
+      <h2 class="font-display text-xl font-semibold mb-4">Continue learning</h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-5 flex gap-4">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=140&h=140&fit=crop" class="w-20 h-20 rounded-lg object-cover shrink-0" alt="">
+          <div class="flex-1">
+            <p class="font-medium mb-1">Product Analytics, Applied</p>
+            <p class="text-xs text-ink/50 dark:text-white/50 mb-3">Module 3 of 4 · Running the experiment review</p>
+            <div class="h-1.5 w-full bg-ink/10 dark:bg-white/10 rounded-full overflow-hidden">
+              <div class="progress-bar h-full bg-trail dark:bg-[#8FC4B4]" style="width:74%"></div>
+            </div>
+            <a href="course-detail.html" class="text-xs font-semibold text-trail dark:text-[#8FC4B4] mt-3 inline-block hover:underline">Resume →</a>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-5 flex gap-4">
+          <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=140&h=140&fit=crop" class="w-20 h-20 rounded-lg object-cover shrink-0" alt="">
+          <div class="flex-1">
+            <p class="font-medium mb-1">Systems Design for Interviews</p>
+            <p class="text-xs text-ink/50 dark:text-white/50 mb-3">Module 1 of 5 · Framing the right metric</p>
+            <div class="h-1.5 w-full bg-ink/10 dark:bg-white/10 rounded-full overflow-hidden">
+              <div class="progress-bar h-full bg-trail dark:bg-[#8FC4B4]" style="width:18%"></div>
+            </div>
+            <a href="course-detail.html" class="text-xs font-semibold text-trail dark:text-[#8FC4B4] mt-3 inline-block hover:underline">Resume →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-8">
+      <!-- Upcoming live classes -->
+      <div>
+        <h2 class="font-display text-xl font-semibold mb-4">Upcoming live classes</h2>
+        <div class="space-y-3">
+          <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-4 flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium">A/B Readouts — Live Session</p>
+              <p class="text-xs font-mono text-ink/40 dark:text-white/40 mt-1">Wed, Jul 29 · 5:00 PM IST</p>
+            </div>
+            <button class="text-xs font-semibold px-3 py-1.5 rounded-full bg-amber text-white">Join</button>
+          </div>
+          <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-4 flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium">Systems Design Office Hours</p>
+              <p class="text-xs font-mono text-ink/40 dark:text-white/40 mt-1">Fri, Jul 31 · 7:30 PM IST</p>
+            </div>
+            <button class="text-xs font-semibold px-3 py-1.5 rounded-full border border-ink/15 dark:border-white/20">Set reminder</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Certificates -->
+      <div>
+        <h2 class="font-display text-xl font-semibold mb-4">Recent certificates</h2>
+        <div class="space-y-3">
+          <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-4 flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium">SQL for Decision Making</p>
+              <p class="text-xs font-mono text-ink/40 dark:text-white/40 mt-1">Issued Jul 4, 2026</p>
+            </div>
+            <button class="text-xs font-semibold text-trail dark:text-[#8FC4B4] hover:underline">Download</button>
+          </div>
+          <div class="bg-white dark:bg-nightcard rounded-xl border border-ink/10 dark:border-white/10 p-4 flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium">Figma to Production UI</p>
+              <p class="text-xs font-mono text-ink/40 dark:text-white/40 mt-1">Issued Jun 18, 2026</p>
+            </div>
+            <button class="text-xs font-semibold text-trail dark:text-[#8FC4B4] hover:underline">Download</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  if (localStorage.getItem('meridian-theme') === 'dark') document.documentElement.classList.add('dark');
+</script>
+</body>
+</html>

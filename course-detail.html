@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Analytics, Applied — Meridian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: {
+    display: ['Fraunces','serif'], body: ['Inter','sans-serif'], mono: ['IBM Plex Mono','monospace'] },
+    colors: { paper:'#F6F4EE', ink:'#1B2B26', pine:'#233C34', trail:'#3B6E64', amber:'#C77D3B', stone:'#8A8578', night:'#0F1815', nightcard:'#182420' } } } }
+</script>
+<style>
+  body { background:#F6F4EE; } html.dark body { background:#0F1815; }
+  :focus-visible { outline: 2px solid #C77D3B; outline-offset: 2px; }
+  .tab-btn.active { color:#233C34; border-color:#3B6E64; }
+  html.dark .tab-btn.active { color:#EDEAE1; border-color:#8FC4B4; }
+  .tab-panel { display:none; } .tab-panel.active { display:block; }
+  .accordion-content { max-height:0; overflow:hidden; transition:max-height .3s ease; }
+  .lesson-item.open .accordion-content { max-height:400px; }
+  .lesson-item.open .chev { transform:rotate(180deg); }
+  .chev { transition: transform .2s ease; }
+</style>
+</head>
+<body class="font-body text-ink dark:text-[#EDEAE1] antialiased">
+
+<header class="sticky top-0 z-50 backdrop-blur-md bg-paper/85 dark:bg-night/85 border-b border-ink/10 dark:border-white/10">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2">
+      <svg width="24" height="24" viewBox="0 0 26 26" fill="none"><path d="M2 20 C7 20 8 8 13 8 C18 8 19 20 24 20" stroke="#C77D3B" stroke-width="2" stroke-linecap="round"/><circle cx="13" cy="8" r="2.5" fill="#3B6E64"/></svg>
+      <span class="font-display text-xl font-semibold">Meridian</span>
+    </a>
+    <div class="flex items-center gap-3">
+      <a href="dashboard.html" class="text-sm font-medium px-4 py-2 rounded-full hover:bg-ink/5 dark:hover:bg-white/10 transition">My dashboard</a>
+    </div>
+  </div>
+</header>
+
+<!-- Breadcrumb + title band -->
+<section class="bg-pine dark:bg-nightcard text-paper py-12">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <p class="text-xs font-mono text-white/50 mb-4"><a href="index.html" class="hover:underline">Courses</a> / Product &amp; Strategy</p>
+    <div class="grid lg:grid-cols-3 gap-8 items-start">
+      <div class="lg:col-span-2">
+        <span class="text-xs font-mono uppercase tracking-wide text-amber">Intermediate · 6 weeks</span>
+        <h1 class="font-display text-4xl font-semibold mt-3 mb-4 leading-tight">Product Analytics, Applied</h1>
+        <p class="text-white/70 max-w-xl">Move past vanity metrics. Build the dashboards, define the north-star metric, and run the experiment reviews that a working product team actually depends on.</p>
+        <div class="flex items-center gap-5 mt-6 text-sm">
+          <span class="flex items-center gap-1.5"><span class="text-amber">★ 4.9</span><span class="text-white/50">(1,204 ratings)</span></span>
+          <span class="text-white/50">8,940 students</span>
+        </div>
+        <div class="flex items-center gap-3 mt-6">
+          <img src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?w=80&h=80&fit=crop" class="w-10 h-10 rounded-full object-cover" alt="">
+          <div>
+            <p class="text-sm font-medium">Priya Nair</p>
+            <p class="text-xs font-mono text-white/50">Sr. Product Manager, currently shipping</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="max-w-7xl mx-auto px-6 lg:px-10 py-12 grid lg:grid-cols-3 gap-10">
+  <!-- Main -->
+  <div class="lg:col-span-2">
+    <!-- Video player -->
+    <div class="relative rounded-2xl overflow-hidden bg-black aspect-video mb-8 group">
+      <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&h=500&fit=crop" class="w-full h-full object-cover opacity-70" alt="Course preview">
+      <button class="absolute inset-0 flex items-center justify-center" aria-label="Play preview">
+        <span class="w-16 h-16 rounded-full bg-amber flex items-center justify-center group-hover:scale-105 transition">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+        </span>
+      </button>
+      <span class="absolute bottom-4 left-4 text-xs font-mono text-white bg-black/50 px-2 py-1 rounded">Preview · 2:14</span>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex gap-6 border-b border-ink/10 dark:border-white/10 mb-8 text-sm font-medium">
+      <button class="tab-btn active pb-3 border-b-2 border-transparent" data-tab="overview">Overview</button>
+      <button class="tab-btn pb-3 border-b-2 border-transparent" data-tab="curriculum">Curriculum</button>
+      <button class="tab-btn pb-3 border-b-2 border-transparent" data-tab="reviews">Reviews</button>
+      <button class="tab-btn pb-3 border-b-2 border-transparent" data-tab="discussion">Discussion</button>
+    </div>
+
+    <div id="overview" class="tab-panel active space-y-6">
+      <div>
+        <h3 class="font-display text-xl font-semibold mb-3">What you'll walk away with</h3>
+        <ul class="space-y-2 text-sm text-ink/70 dark:text-white/70">
+          <li class="flex gap-2"><span class="text-trail dark:text-[#8FC4B4]">✓</span>A north-star metric framework you can defend in a leadership review</li>
+          <li class="flex gap-2"><span class="text-trail dark:text-[#8FC4B4]">✓</span>A working funnel dashboard built from a real anonymized dataset</li>
+          <li class="flex gap-2"><span class="text-trail dark:text-[#8FC4B4]">✓</span>Experience running an A/B test readout end to end</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-display text-xl font-semibold mb-3">Resources included</h3>
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div class="flex items-center gap-2 p-3 rounded-lg border border-ink/10 dark:border-white/10"><span class="font-mono text-xs text-amber">PDF</span> Metric definitions cheat sheet</div>
+          <div class="flex items-center gap-2 p-3 rounded-lg border border-ink/10 dark:border-white/10"><span class="font-mono text-xs text-amber">CSV</span> Practice funnel dataset</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="curriculum" class="tab-panel space-y-3">
+      <div class="lesson-item open border border-ink/10 dark:border-white/10 rounded-xl overflow-hidden">
+        <button class="lesson-btn w-full flex items-center justify-between p-4 text-left">
+          <span><span class="font-mono text-xs text-trail dark:text-[#8FC4B4] mr-2">Module 1</span> Framing the right metric</span>
+          <svg class="chev w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="accordion-content px-4">
+          <ul class="pb-4 space-y-2.5 text-sm text-ink/60 dark:text-white/60">
+            <li class="flex justify-between"><span>1.1 Vanity vs. actionable metrics</span><span class="font-mono text-xs">8 min</span></li>
+            <li class="flex justify-between"><span>1.2 Picking a north star</span><span class="font-mono text-xs">12 min</span></li>
+            <li class="flex justify-between"><span>1.3 Quiz — Metric selection</span><span class="font-mono text-xs">10 questions</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="lesson-item border border-ink/10 dark:border-white/10 rounded-xl overflow-hidden">
+        <button class="lesson-btn w-full flex items-center justify-between p-4 text-left">
+          <span><span class="font-mono text-xs text-trail dark:text-[#8FC4B4] mr-2">Module 2</span> Building the funnel dashboard</span>
+          <svg class="chev w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="accordion-content px-4">
+          <ul class="pb-4 space-y-2.5 text-sm text-ink/60 dark:text-white/60">
+            <li class="flex justify-between"><span>2.1 Working with the practice dataset</span><span class="font-mono text-xs">15 min</span></li>
+            <li class="flex justify-between"><span>2.2 Assignment — Ship a dashboard</span><span class="font-mono text-xs">graded</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="lesson-item border border-ink/10 dark:border-white/10 rounded-xl overflow-hidden">
+        <button class="lesson-btn w-full flex items-center justify-between p-4 text-left">
+          <span><span class="font-mono text-xs text-trail dark:text-[#8FC4B4] mr-2">Module 3</span> Running the experiment review</span>
+          <svg class="chev w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="accordion-content px-4">
+          <ul class="pb-4 space-y-2.5 text-sm text-ink/60 dark:text-white/60">
+            <li class="flex justify-between"><span>3.1 Live session — A/B readouts</span><span class="font-mono text-xs">60 min</span></li>
+            <li class="flex justify-between"><span>3.2 Final assessment</span><span class="font-mono text-xs">timed</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="reviews" class="tab-panel space-y-5">
+      <div class="border-b border-ink/10 dark:border-white/10 pb-5">
+        <div class="flex items-center gap-2 mb-1"><span class="text-amber text-sm">★★★★★</span><span class="text-sm font-medium">Genuinely felt like a job, in a good way</span></div>
+        <p class="text-sm text-ink/60 dark:text-white/60">The graded dashboard assignment is the closest thing to real work I've done in a course. — Marcus D.</p>
+      </div>
+      <div class="border-b border-ink/10 dark:border-white/10 pb-5">
+        <div class="flex items-center gap-2 mb-1"><span class="text-amber text-sm">★★★★★</span><span class="text-sm font-medium">Instructor actually answers questions</span></div>
+        <p class="text-sm text-ink/60 dark:text-white/60">Priya responded to my discussion post within a day, twice. — Jae L.</p>
+      </div>
+    </div>
+
+    <div id="discussion" class="tab-panel">
+      <p class="text-sm text-ink/60 dark:text-white/60">Sign in to view and join the discussion for this course.</p>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside>
+    <div class="sticky top-24 bg-white dark:bg-nightcard border border-ink/10 dark:border-white/10 rounded-2xl p-6 shadow-sm">
+      <p class="font-display text-3xl font-semibold mb-1">$79</p>
+      <p class="text-xs font-mono text-ink/40 dark:text-white/40 mb-6">One-time · lifetime access</p>
+      <button class="w-full py-3 rounded-full bg-amber text-white font-semibold text-sm hover:opacity-90 transition mb-3">Enroll now</button>
+      <button class="w-full py-3 rounded-full border border-ink/15 dark:border-white/20 font-semibold text-sm hover:bg-ink/5 dark:hover:bg-white/5 transition mb-6">Add to wishlist</button>
+      <ul class="space-y-3 text-sm">
+        <li class="flex justify-between"><span class="text-ink/50 dark:text-white/50">Duration</span><span>6 weeks</span></li>
+        <li class="flex justify-between"><span class="text-ink/50 dark:text-white/50">Level</span><span>Intermediate</span></li>
+        <li class="flex justify-between"><span class="text-ink/50 dark:text-white/50">Language</span><span>English</span></li>
+        <li class="flex justify-between"><span class="text-ink/50 dark:text-white/50">Certificate</span><span>Yes</span></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<script>
+  if (localStorage.getItem('meridian-theme') === 'dark') document.documentElement.classList.add('dark');
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+  document.querySelectorAll('.lesson-btn').forEach(btn => {
+    btn.addEventListener('click', () => btn.closest('.lesson-item').classList.toggle('open'));
+  });
+</script>
+</body>
+</html>

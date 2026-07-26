@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meridian — Learn the routes people already took</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['Fraunces', 'serif'],
+          body: ['Inter', 'sans-serif'],
+          mono: ['IBM Plex Mono', 'monospace'],
+        },
+        colors: {
+          paper: '#F6F4EE',
+          ink: '#1B2B26',
+          pine: '#233C34',
+          trail: '#3B6E64',
+          amber: '#C77D3B',
+          stone: '#8A8578',
+          night: '#0F1815',
+          nightcard: '#182420',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { background-color: #F6F4EE; }
+  html.dark body { background-color: #0F1815; }
+
+  .contour-bg {
+    background-image:
+      repeating-radial-gradient(circle at 15% 30%, transparent 0, transparent 38px, rgba(59,110,100,0.07) 39px, rgba(59,110,100,0.07) 40px, transparent 41px),
+      repeating-radial-gradient(circle at 85% 70%, transparent 0, transparent 52px, rgba(199,125,59,0.06) 53px, rgba(199,125,59,0.06) 54px, transparent 55px);
+    background-size: 100% 100%;
+  }
+  html.dark .contour-bg {
+    background-image:
+      repeating-radial-gradient(circle at 15% 30%, transparent 0, transparent 38px, rgba(59,110,100,0.14) 39px, rgba(59,110,100,0.14) 40px, transparent 41px),
+      repeating-radial-gradient(circle at 85% 70%, transparent 0, transparent 52px, rgba(199,125,59,0.10) 53px, rgba(199,125,59,0.10) 54px, transparent 55px);
+  }
+
+  .route-dot {
+    offset-path: path('M20,180 C120,180 140,60 240,60 C340,60 360,150 460,150 C560,150 590,40 700,40');
+    offset-rotate: 0deg;
+    animation: travel 7s linear infinite;
+  }
+  @keyframes travel {
+    0% { offset-distance: 0%; }
+    100% { offset-distance: 100%; }
+  }
+  .route-path {
+    stroke-dasharray: 1200;
+    stroke-dashoffset: 1200;
+    animation: draw 2.4s ease-out forwards;
+  }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+
+  .card-lift { transition: transform .25s ease, box-shadow .25s ease; }
+  .card-lift:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -18px rgba(27,43,38,0.25); }
+
+  .waypoint-line { background: linear-gradient(90deg, transparent, #3B6E64 15%, #3B6E64 85%, transparent); height: 2px; }
+  html.dark .waypoint-line { background: linear-gradient(90deg, transparent, #7FB3A3 15%, #7FB3A3 85%, transparent); }
+
+  .accordion-content { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
+  .accordion-item.open .accordion-content { max-height: 300px; }
+  .accordion-item.open .chev { transform: rotate(180deg); }
+  .chev { transition: transform .25s ease; }
+
+  ::selection { background: #C77D3B; color: #F6F4EE; }
+  :focus-visible { outline: 2px solid #C77D3B; outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .route-dot, .route-path { animation: none !important; }
+  }
+</style>
+</head>
+<body class="font-body text-ink dark:text-[#EDEAE1] antialiased">
+
+<!-- NAV -->
+<header class="sticky top-0 z-50 backdrop-blur-md bg-paper/85 dark:bg-night/85 border-b border-ink/10 dark:border-white/10">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-2">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <path d="M2 20 C7 20 8 8 13 8 C18 8 19 20 24 20" stroke="#C77D3B" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="13" cy="8" r="2.5" fill="#3B6E64"/>
+      </svg>
+      <span class="font-display text-xl font-semibold tracking-tight">Meridian</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-ink/70 dark:text-white/70">
+      <a href="#courses" class="hover:text-ink dark:hover:text-white transition">Courses</a>
+      <a href="#how" class="hover:text-ink dark:hover:text-white transition">How it works</a>
+      <a href="#pricing" class="hover:text-ink dark:hover:text-white transition">Pricing</a>
+      <a href="#instructors" class="hover:text-ink dark:hover:text-white transition">Teach</a>
+      <a href="#faq" class="hover:text-ink dark:hover:text-white transition">FAQ</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <button id="themeToggle" aria-label="Toggle dark mode" class="w-9 h-9 rounded-full border border-ink/15 dark:border-white/20 flex items-center justify-center hover:bg-ink/5 dark:hover:bg-white/10 transition">
+        <svg id="sunIcon" class="w-4 h-4 hidden dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg id="moonIcon" class="w-4 h-4 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>
+      </button>
+      <a href="login.html" class="hidden sm:inline-block text-sm font-medium px-4 py-2 rounded-full hover:bg-ink/5 dark:hover:bg-white/10 transition">Sign in</a>
+      <a href="signup.html" class="text-sm font-semibold px-4 py-2 rounded-full bg-pine text-paper dark:bg-trail hover:opacity-90 transition">Get started</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="relative contour-bg overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 pt-16 pb-24 lg:pt-24 lg:pb-32 grid lg:grid-cols-2 gap-14 items-center">
+    <div>
+      <span class="inline-flex items-center gap-2 text-xs font-mono tracking-wide uppercase text-trail dark:text-[#8FC4B4] mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-amber"></span> Charted by 4,200+ working practitioners
+      </span>
+      <h1 class="font-display text-5xl sm:text-6xl leading-[1.05] font-semibold tracking-tight">
+        Learn the route<br/> people who've<br/> <span class="italic text-trail dark:text-[#8FC4B4]">already arrived</span> took.
+      </h1>
+      <p class="mt-6 text-lg text-ink/70 dark:text-white/70 max-w-md">
+        Every Meridian course is built and taught by someone currently doing the job — mapped into a path, not just a stack of videos.
+      </p>
+      <form class="mt-8 flex items-center gap-2 max-w-md bg-white dark:bg-nightcard rounded-full border border-ink/10 dark:border-white/10 p-1.5 shadow-sm">
+        <svg class="w-4 h-4 ml-3 text-ink/40 dark:text-white/40 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" placeholder="Search a skill, a role, an outcome…" class="flex-1 bg-transparent outline-none text-sm placeholder:text-ink/40 dark:placeholder:text-white/40" />
+        <button class="text-sm font-semibold px-5 py-2.5 rounded-full bg-amber text-white hover:opacity-90 transition">Search</button>
+      </form>
+      <div class="mt-8 flex items-center gap-6 text-xs font-mono text-ink/50 dark:text-white/50">
+        <span>1,900 courses</span><span class="w-1 h-1 rounded-full bg-ink/30 dark:bg-white/30"></span>
+        <span>310 instructors</span><span class="w-1 h-1 rounded-full bg-ink/30 dark:bg-white/30"></span>
+        <span>92% completion</span>
+      </div>
+    </div>
+
+    <div class="relative">
+      <svg viewBox="0 0 720 220" class="w-full h-auto">
+        <path class="route-path" d="M20,180 C120,180 140,60 240,60 C340,60 360,150 460,150 C560,150 590,40 700,40" fill="none" stroke="#3B6E64" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+        <circle cx="20" cy="180" r="5" fill="#233C34" class="dark:fill-white"/>
+        <circle cx="700" cy="40" r="5" fill="#C77D3B"/>
+        <circle r="7" fill="#C77D3B" class="route-dot"/>
+        <text x="15" y="200" class="font-mono" font-size="11" fill="currentColor" opacity="0.6">START</text>
+        <text x="655" y="30" class="font-mono" font-size="11" fill="currentColor" opacity="0.6">JOB-READY</text>
+      </svg>
+      <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[92%] bg-white dark:bg-nightcard rounded-2xl shadow-xl border border-ink/10 dark:border-white/10 p-4 flex items-center gap-4">
+        <img src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?w=100&h=100&fit=crop" class="w-12 h-12 rounded-lg object-cover" alt="">
+        <div class="flex-1">
+          <p class="text-sm font-semibold">Product Analytics, Applied</p>
+          <p class="text-xs text-ink/50 dark:text-white/50 font-mono">Taught by a Sr. PM at a Series C startup</p>
+        </div>
+        <span class="text-xs font-mono text-trail dark:text-[#8FC4B4]">4.9 ★</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="border-y border-ink/10 dark:border-white/10 bg-white/50 dark:bg-white/[0.03]">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 py-10 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    <div><p class="font-display text-3xl font-semibold">1,900+</p><p class="text-xs font-mono uppercase text-ink/50 dark:text-white/50 mt-1">Courses charted</p></div>
+    <div><p class="font-display text-3xl font-semibold">310</p><p class="text-xs font-mono uppercase text-ink/50 dark:text-white/50 mt-1">Practicing instructors</p></div>
+    <div><p class="font-display text-3xl font-semibold">86,400</p><p class="text-xs font-mono uppercase text-ink/50 dark:text-white/50 mt-1">Students on the trail</p></div>
+    <div><p class="font-display text-3xl font-semibold">92%</p><p class="text-xs font-mono uppercase text-ink/50 dark:text-white/50 mt-1">Course completion</p></div>
+  </div>
+</section>
+
+<!-- POPULAR COURSES -->
+<section id="courses" class="max-w-7xl mx-auto px-6 lg:px-10 py-24">
+  <div class="flex items-end justify-between mb-10">
+    <div>
+      <span class="text-xs font-mono uppercase tracking-wide text-amber">Popular right now</span>
+      <h2 class="font-display text-3xl sm:text-4xl font-semibold mt-2">Courses students are finishing</h2>
+    </div>
+    <a href="#" class="hidden sm:inline text-sm font-semibold text-trail dark:text-[#8FC4B4] hover:underline">Browse all →</a>
+  </div>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6" id="courseGrid"></div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="bg-pine dark:bg-nightcard text-paper py-24">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <span class="text-xs font-mono uppercase tracking-wide text-amber">Trailheads</span>
+    <h2 class="font-display text-3xl sm:text-4xl font-semibold mt-2 mb-10">Pick where the path starts</h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4" id="categoryGrid"></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="max-w-7xl mx-auto px-6 lg:px-10 py-24">
+  <div class="text-center max-w-xl mx-auto mb-16">
+    <span class="text-xs font-mono uppercase tracking-wide text-amber">How it works</span>
+    <h2 class="font-display text-3xl sm:text-4xl font-semibold mt-2">Three waypoints, one route</h2>
+  </div>
+  <div class="relative grid md:grid-cols-3 gap-10">
+    <div class="hidden md:block absolute top-6 left-[16%] right-[16%] waypoint-line"></div>
+    <div class="text-center relative">
+      <div class="w-12 h-12 rounded-full bg-white dark:bg-nightcard border-2 border-trail dark:border-[#8FC4B4] flex items-center justify-center mx-auto mb-5 relative z-10 font-mono text-sm">A</div>
+      <h3 class="font-display text-xl font-semibold mb-2">Pick a destination</h3>
+      <p class="text-sm text-ink/60 dark:text-white/60 max-w-xs mx-auto">Tell us the role or skill you're aiming for — we chart the shortest real path to it.</p>
+    </div>
+    <div class="text-center relative">
+      <div class="w-12 h-12 rounded-full bg-white dark:bg-nightcard border-2 border-trail dark:border-[#8FC4B4] flex items-center justify-center mx-auto mb-5 relative z-10 font-mono text-sm">B</div>
+      <h3 class="font-display text-xl font-semibold mb-2">Walk it with a guide</h3>
+      <p class="text-sm text-ink/60 dark:text-white/60 max-w-xs mx-auto">Lessons, live sessions and graded work from someone doing the job today, not a decade ago.</p>
+    </div>
+    <div class="text-center relative">
+      <div class="w-12 h-12 rounded-full bg-white dark:bg-nightcard border-2 border-amber flex items-center justify-center mx-auto mb-5 relative z-10 font-mono text-sm">C</div>
+      <h3 class="font-display text-xl font-semibold mb-2">Arrive with proof</h3>
+      <p class="text-sm text-ink/60 dark:text-white/60 max-w-xs mx-auto">A certificate, a portfolio piece, and a graded record you can point to in an interview.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="bg-white/50 dark:bg-white/[0.03] border-y border-ink/10 dark:border-white/10 py-24">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <span class="text-xs font-mono uppercase tracking-wide text-amber">Field notes</span>
+    <h2 class="font-display text-3xl sm:text-4xl font-semibold mt-2 mb-10">Students who made the crossing</h2>
+    <div class="grid md:grid-cols-3 gap-6" id="testimonialGrid"></div>
+  </div>
+</section>
+
+<!-- INSTRUCTOR CTA -->
+<section id="instructors" class="max-w-7xl mx-auto px-6 lg:px-10 py-24 grid lg:grid-cols-2 gap-12 items-center">
+  <div>
+    <span class="text-xs font-mono uppercase tracking-wide text-amber">For instructors</span>
+    <h2 class="font-display text-3xl sm:text-4xl font-semibold mt-2 mb-5">Teach the route you already walked</h2>
+    <p class="text-ink/70 dark:text-white/70 mb-8 max-w-md">Meridian instructors keep 70% of every enrollment and get production support — filming, editing, and course design help included.</p>
+    <a href="#" class="inline-block text-sm font-semibold px-6 py-3 rounded-full bg-pine text-paper dark:bg-trail hover:opacity-90 transition">Apply to teach</a>
+  </div>
+  <div class="grid grid-cols-3 gap-3">
+    <div class="col-span-2 row-span-2 rounded-2xl overflow-hidden"><img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=500&h=500&fit=crop" class="w-full h-full object-cover" alt=""></div>
+    <div class="rounded-2xl overflow-hidden"><img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=300&h=300&fit=crop" class="w-full h-full object-cover" alt=""></div>
+    <div class="rounded-2xl overflow-hidden"><img src="https://images.unsplash.com/photo-1487017159836-4e23ece2e4cf?w=300&h=300&fit=crop" class="w-full h-full object-cover" alt=""></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="bg-pine dark:bg-nightcard text-paper py-24">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="text-center max-w-xl mx-auto mb-16">
+      <span class="text-xs font-mono uppercase tracking-wide text-amber">Pricing</span>
+      <h2 class="font-display text-3xl sm:text-4xl font-semibold mt-2">Pay per route, or walk them all</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6" id="pricingGrid"></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="max-w-4xl mx-auto px-6 lg:px-10 py-24">
+  <div class="text-center mb-14">
+    <span class="text-xs font-mono uppercase tracking-wide text-amber">FAQ</span>
+    <h2 class="font-display text-3xl sm:text-4xl font-semibold mt-2">Before you start walking</h2>
+  </div>
+  <div id="faqList" class="space-y-3"></div>
+</section>
+
+<!-- BLOG -->
+<section class="max-w-7xl mx-auto px-6 lg:px-10 pb-24">
+  <div class="flex items-end justify-between mb-10">
+    <div>
+      <span class="text-xs font-mono uppercase tracking-wide text-amber">Latest field notes</span>
+      <h2 class="font-display text-3xl sm:text-4xl font-semibold mt-2">From the blog</h2>
+    </div>
+  </div>
+  <div class="grid md:grid-cols-3 gap-6" id="blogGrid"></div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t border-ink/10 dark:border-white/10 py-16">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 grid sm:grid-cols-2 lg:grid-cols-5 gap-10">
+    <div class="col-span-2">
+      <div class="flex items-center gap-2 mb-3">
+        <svg width="22" height="22" viewBox="0 0 26 26" fill="none"><path d="M2 20 C7 20 8 8 13 8 C18 8 19 20 24 20" stroke="#C77D3B" stroke-width="2" stroke-linecap="round"/><circle cx="13" cy="8" r="2.5" fill="#3B6E64"/></svg>
+        <span class="font-display text-lg font-semibold">Meridian</span>
+      </div>
+      <p class="text-sm text-ink/60 dark:text-white/60 max-w-xs">Courses charted by people who've already made the crossing.</p>
+    </div>
+    <div>
+      <p class="text-xs font-mono uppercase text-ink/40 dark:text-white/40 mb-3">Learn</p>
+      <ul class="space-y-2 text-sm text-ink/70 dark:text-white/70">
+        <li><a href="#" class="hover:underline">Browse courses</a></li>
+        <li><a href="#" class="hover:underline">Categories</a></li>
+        <li><a href="#" class="hover:underline">Certificates</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="text-xs font-mono uppercase text-ink/40 dark:text-white/40 mb-3">Company</p>
+      <ul class="space-y-2 text-sm text-ink/70 dark:text-white/70">
+        <li><a href="#" class="hover:underline">About</a></li>
+        <li><a href="#" class="hover:underline">Careers</a></li>
+        <li><a href="#" class="hover:underline">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="text-xs font-mono uppercase text-ink/40 dark:text-white/40 mb-3">Support</p>
+      <ul class="space-y-2 text-sm text-ink/70 dark:text-white/70">
+        <li><a href="#" class="hover:underline">Help center</a></li>
+        <li><a href="#" class="hover:underline">Contact</a></li>
+        <li><a href="#" class="hover:underline">Refunds</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 mt-12 pt-8 border-t border-ink/10 dark:border-white/10 flex flex-col sm:flex-row justify-between gap-4 text-xs text-ink/40 dark:text-white/40 font-mono">
+    <span>© 2026 Meridian Learning, Inc.</span>
+    <span>Made for people mid-route.</span>
+  </div>
+</footer>
+
+<script>
+  // Theme toggle
+  const themeToggle = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  if (localStorage.getItem('meridian-theme') === 'dark') root.classList.add('dark');
+  themeToggle.addEventListener('click', () => {
+    root.classList.toggle('dark');
+    localStorage.setItem('meridian-theme', root.classList.contains('dark') ? 'dark' : 'light');
+  });
+
+  // Data
+  const courses = [
+    { title: "Product Analytics, Applied", instructor: "Priya N. — Sr. PM", price: "$79", rating: "4.9", level: "Intermediate", img: "1580894732444-8ecded7900cd" },
+    { title: "Systems Design for Interviews", instructor: "Marcus O. — Staff Eng.", price: "$99", rating: "4.8", level: "Advanced", img: "1517694712202-14dd9538aa97" },
+    { title: "Figma to Production UI", instructor: "Lena K. — Design Lead", price: "$59", rating: "4.9", level: "Beginner", img: "1561070791-2526d30994b5" },
+    { title: "SQL for Decision Making", instructor: "Tomas R. — Data Lead", price: "$49", rating: "4.7", level: "Beginner", img: "1551288049-bebda4e38f71" },
+  ];
+  const courseGrid = document.getElementById('courseGrid');
+  courses.forEach(c => {
+    courseGrid.innerHTML += `
+      <a href="course-detail.html" class="card-lift block bg-white dark:bg-nightcard rounded-2xl border border-ink/10 dark:border-white/10 overflow-hidden">
+        <img src="https://images.unsplash.com/photo-${c.img}?w=400&h=240&fit=crop" class="w-full h-36 object-cover" alt="">
+        <div class="p-5">
+          <span class="text-[10px] font-mono uppercase text-trail dark:text-[#8FC4B4]">${c.level}</span>
+          <h3 class="font-display font-semibold text-lg mt-1 mb-1 leading-snug">${c.title}</h3>
+          <p class="text-xs text-ink/50 dark:text-white/50 mb-4">${c.instructor}</p>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono text-amber">★ ${c.rating}</span>
+            <span class="font-semibold">${c.price}</span>
+          </div>
+        </div>
+      </a>`;
+  });
+
+  const categories = [
+    { name: "Product & Strategy", count: "210 courses" },
+    { name: "Software Engineering", count: "480 courses" },
+    { name: "Data & Analytics", count: "320 courses" },
+    { name: "Design", count: "190 courses" },
+    { name: "Marketing & Growth", count: "150 courses" },
+    { name: "Leadership", count: "95 courses" },
+  ];
+  const categoryGrid = document.getElementById('categoryGrid');
+  categories.forEach(c => {
+    categoryGrid.innerHTML += `
+      <a href="#" class="group flex items-center justify-between p-5 rounded-xl border border-white/15 hover:bg-white/5 transition">
+        <div>
+          <p class="font-display font-medium text-lg">${c.name}</p>
+          <p class="text-xs font-mono text-white/50 mt-1">${c.count}</p>
+        </div>
+        <span class="text-amber group-hover:translate-x-1 transition">→</span>
+      </a>`;
+  });
+
+  const testimonials = [
+    { name: "Alicia M.", role: "→ Data Analyst at a fintech", quote: "I finished the SQL path and had two interview loops within a month. The grading felt like a real manager reviewing my work." },
+    { name: "Devon T.", role: "→ Frontend Engineer", quote: "The instructor was still shipping code that week. It didn't feel like a lecture series — it felt like pairing." },
+    { name: "Grace P.", role: "→ Product Manager", quote: "Waypoints kept me from quitting halfway. Every module ended with something I could show, not just watch." },
+  ];
+  const testimonialGrid = document.getElementById('testimonialGrid');
+  testimonials.forEach(t => {
+    testimonialGrid.innerHTML += `
+      <div class="bg-white dark:bg-nightcard rounded-2xl border border-ink/10 dark:border-white/10 p-6">
+        <p class="text-sm leading-relaxed mb-5">"${t.quote}"</p>
+        <p class="text-sm font-semibold">${t.name}</p>
+        <p class="text-xs font-mono text-trail dark:text-[#8FC4B4]">${t.role}</p>
+      </div>`;
+  });
+
+  const plans = [
+    { name: "Single Route", price: "$49", period: "per course", features: ["Lifetime access to one course", "Certificate on completion", "Downloadable resources"], cta: "Buy this route" },
+    { name: "All Access", price: "$29", period: "per month", features: ["Every course, unlimited", "Live cohort sessions", "Priority instructor Q&A"], cta: "Start free week", highlight: true },
+    { name: "Teams", price: "Custom", period: "per seat", features: ["Team dashboards", "Progress reporting", "Dedicated onboarding"], cta: "Talk to sales" },
+  ];
+  const pricingGrid = document.getElementById('pricingGrid');
+  plans.forEach(p => {
+    pricingGrid.innerHTML += `
+      <div class="rounded-2xl p-7 ${p.highlight ? 'bg-amber text-white' : 'bg-white/5 border border-white/15'}">
+        <p class="font-display text-xl font-semibold mb-1">${p.name}</p>
+        <p class="text-3xl font-display font-semibold mb-1">${p.price} <span class="text-sm font-body font-normal opacity-70">${p.period}</span></p>
+        <ul class="mt-6 space-y-2 text-sm opacity-90">
+          ${p.features.map(f => `<li class="flex gap-2"><span>✓</span>${f}</li>`).join('')}
+        </ul>
+        <button class="mt-8 w-full py-2.5 rounded-full text-sm font-semibold ${p.highlight ? 'bg-white text-amber' : 'bg-white text-pine'} hover:opacity-90 transition">${p.cta}</button>
+      </div>`;
+  });
+
+  const faqs = [
+    { q: "How is Meridian different from a video course library?", a: "Every course is a structured path with graded checkpoints, not just a playlist. Instructors are actively working in the field they teach, and content gets refreshed as the field changes." },
+    { q: "What happens if I don't finish a course?", a: "Access doesn't expire on single-route purchases. Pick up exactly where you left off — your progress and quiz results are saved." },
+    { q: "Do certificates carry any weight?", a: "Certificates include a verifiable link with your graded work and completion date, so anyone reviewing it can see what you actually built, not just that you enrolled." },
+    { q: "Can my company buy seats for a team?", a: "Yes — the Teams plan includes a shared dashboard for managers to see progress and completion across the group." },
+  ];
+  const faqList = document.getElementById('faqList');
+  faqs.forEach((f, i) => {
+    faqList.innerHTML += `
+      <div class="accordion-item border border-ink/10 dark:border-white/10 rounded-xl overflow-hidden">
+        <button class="faq-btn w-full flex items-center justify-between p-5 text-left font-medium" data-i="${i}">
+          ${f.q}
+          <svg class="chev w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="accordion-content px-5"><p class="text-sm text-ink/60 dark:text-white/60 pb-5">${f.a}</p></div>
+      </div>`;
+  });
+  document.querySelectorAll('.faq-btn').forEach(btn => {
+    btn.addEventListener('click', () => btn.closest('.accordion-item').classList.toggle('open'));
+  });
+
+  const posts = [
+    { title: "Why 'watch time' is the wrong metric for learning", tag: "Product", img: "1499750310107-5fef28a66643" },
+    { title: "What we learned rebuilding our quiz engine", tag: "Engineering", img: "1516321318423-f06f85e504b3" },
+    { title: "How to actually vet an online instructor", tag: "Guide", img: "1524178232363-1fb2b075b655" },
+  ];
+  const blogGrid = document.getElementById('blogGrid');
+  posts.forEach(p => {
+    blogGrid.innerHTML += `
+      <a href="#" class="card-lift block bg-white dark:bg-nightcard rounded-2xl border border-ink/10 dark:border-white/10 overflow-hidden">
+        <img src="https://images.unsplash.com/photo-${p.img}?w=400&h=220&fit=crop" class="w-full h-40 object-cover" alt="">
+        <div class="p-5">
+          <span class="text-[10px] font-mono uppercase text-amber">${p.tag}</span>
+          <h3 class="font-display font-semibold mt-1 leading-snug">${p.title}</h3>
+        </div>
+      </a>`;
+  });
+</script>
+</body>
+</html>
